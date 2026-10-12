@@ -1,0 +1,6 @@
+{
+  "name": "Apex Auto Detailers - AI Booking & Lead Platform",
+  "description": "Production AI car detailing booking chatbot, WhatsApp automation, and administrative lead management system.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

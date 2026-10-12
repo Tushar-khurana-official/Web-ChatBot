@@ -1,0 +1,184 @@
+{
+  "entities": {
+    "BusinessSettings": {
+      "title": "BusinessSettings",
+      "description": "Configurable car detailing business settings and policies",
+      "type": "object",
+      "properties": {
+        "businessName": { "type": "string", "maxLength": 100 },
+        "cityAndServiceArea": { "type": "string", "maxLength": 150 },
+        "address": { "type": "string", "maxLength": 250 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "whatsappNumber": { "type": "string", "maxLength": 30 },
+        "openingHours": { "type": "string", "maxLength": 150 },
+        "currency": { "type": "string", "maxLength": 10 },
+        "bookingPolicy": { "type": "string", "maxLength": 500 },
+        "cancellationPolicy": { "type": "string", "maxLength": 500 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["businessName", "phone", "whatsappNumber", "currency"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Automotive detailing service package details and pricing",
+      "type": "object",
+      "properties": {
+        "serviceId": { "type": "string", "maxLength": 64 },
+        "name": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 500 },
+        "category": { "type": "string", "maxLength": 50 },
+        "startingPrice": { "type": "number" },
+        "durationMinutes": { "type": "number" },
+        "inspectionRequired": { "type": "boolean" },
+        "isActive": { "type": "boolean" },
+        "supportedVehicles": { "type": "array" },
+        "tierPrices": { "type": "object" },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["serviceId", "name", "category", "startingPrice", "durationMinutes", "isActive"]
+    },
+    "Lead": {
+      "title": "Lead",
+      "description": "Qualified customer detailing lead captured via chat or WhatsApp",
+      "type": "object",
+      "properties": {
+        "leadId": { "type": "string", "maxLength": 64 },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "customerPhone": { "type": "string", "maxLength": 30 },
+        "vehicleMakeModel": { "type": "string", "maxLength": 100 },
+        "vehicleCategory": { "type": "string", "maxLength": 50 },
+        "serviceId": { "type": "string", "maxLength": 64 },
+        "serviceName": { "type": "string", "maxLength": 100 },
+        "primaryConcern": { "type": "string", "maxLength": 300 },
+        "preferredDate": { "type": "string", "maxLength": 30 },
+        "budget": { "type": "string", "maxLength": 50 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "source": { "type": "string", "maxLength": 30 },
+        "status": { "type": "string", "maxLength": 30 },
+        "consentGiven": { "type": "boolean" },
+        "assignedStaff": { "type": "string", "maxLength": 100 },
+        "followUpNotes": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["customerName", "customerPhone", "status", "source", "consentGiven"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "Car detailing appointment booking record",
+      "type": "object",
+      "properties": {
+        "bookingId": { "type": "string", "maxLength": 64 },
+        "bookingReference": { "type": "string", "maxLength": 32 },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "customerPhone": { "type": "string", "maxLength": 30 },
+        "customerEmail": { "type": "string", "maxLength": 100 },
+        "serviceId": { "type": "string", "maxLength": 64 },
+        "serviceName": { "type": "string", "maxLength": 100 },
+        "vehicleMakeModel": { "type": "string", "maxLength": 100 },
+        "vehicleCategory": { "type": "string", "maxLength": 50 },
+        "appointmentDate": { "type": "string", "maxLength": 30 },
+        "appointmentSlot": { "type": "string", "maxLength": 30 },
+        "durationMinutes": { "type": "number" },
+        "estimatedPrice": { "type": "number" },
+        "status": { "type": "string", "maxLength": 30 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "bookingSource": { "type": "string", "maxLength": 30 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["bookingId", "bookingReference", "customerName", "customerPhone", "serviceId", "appointmentDate", "appointmentSlot", "status"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Customer chat conversation session state",
+      "type": "object",
+      "properties": {
+        "conversationId": { "type": "string", "maxLength": 64 },
+        "channel": { "type": "string", "maxLength": 20 },
+        "customerPhone": { "type": "string", "maxLength": 30 },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "maxLength": 30 },
+        "requiresHumanHandoff": { "type": "boolean" },
+        "lastMessageSnippet": { "type": "string", "maxLength": 200 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["conversationId", "channel", "status"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Individual message in a customer conversation",
+      "type": "object",
+      "properties": {
+        "messageId": { "type": "string", "maxLength": 64 },
+        "conversationId": { "type": "string", "maxLength": 64 },
+        "sender": { "type": "string", "maxLength": 20 },
+        "text": { "type": "string", "maxLength": 2000 },
+        "timestamp": { "type": "string", "maxLength": 50 },
+        "quickReplies": { "type": "array" }
+      },
+      "required": ["messageId", "conversationId", "sender", "text", "timestamp"]
+    },
+    "Staff": {
+      "title": "Staff",
+      "description": "Detailing shop staff member record",
+      "type": "object",
+      "properties": {
+        "staffId": { "type": "string", "maxLength": 64 },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "maxLength": 50 },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["staffId", "name", "role", "active"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Admin authorization entry",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "maxLength": 30 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["uid", "email", "role"]
+    }
+  },
+  "firestore": {
+    "/businessSettings/{docId}": {
+      "schema": "BusinessSettings",
+      "description": "Business profile and booking parameters"
+    },
+    "/services/{serviceId}": {
+      "schema": "Service",
+      "description": "Available detailing services catalog"
+    },
+    "/leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Prospective customer leads requiring follow-up"
+    },
+    "/bookings/{bookingId}": {
+      "schema": "Booking",
+      "description": "Confirmed and pending car detailing appointments"
+    },
+    "/conversations/{conversationId}": {
+      "schema": "Conversation",
+      "description": "Customer inquiry sessions and status"
+    },
+    "/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Chat and WhatsApp message entries"
+    },
+    "/staff/{staffId}": {
+      "schema": "Staff",
+      "description": "Authorized staff list"
+    },
+    "/admins/{uid}": {
+      "schema": "Admin",
+      "description": "System administrator accounts with elevated dashboard access"
+    }
+  }
+}

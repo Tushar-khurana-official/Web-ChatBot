@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.email == 'tusharkh157@gmail.com' && request.auth.token.email_verified == true)
+      );
+    }
+
+    // Business Settings: Publicly readable, writeable only by Admin
+    match /businessSettings/{docId} {
+      allow read: if isValidId(docId);
+      allow write: if isValidId(docId) && isAdmin();
+    }
+
+    // Services Catalog: Publicly readable for active customer queries, managed by Admin
+    match /services/{serviceId} {
+      allow read: if isValidId(serviceId);
+      allow write: if isValidId(serviceId) && isAdmin();
+    }
+
+    // Leads: Create allowed with validation; read/update/delete restricted to Admin to isolate PII
+    match /leads/{leadId} {
+      allow create: if isValidId(leadId) &&
+        request.resource.data.customerName is string &&
+        request.resource.data.customerName.size() > 0 &&
+        request.resource.data.customerName.size() <= 100 &&
+        request.resource.data.customerPhone is string &&
+        request.resource.data.customerPhone.size() > 0 &&
+        request.resource.data.customerPhone.size() <= 30 &&
+        request.resource.data.source is string &&
+        request.resource.data.status is string &&
+        request.resource.data.consentGiven == true;
+      allow read, update, delete: if isValidId(leadId) && isAdmin();
+    }
+
+    // Bookings: Public creation with required appointment fields; full read/update/delete restricted to Admin
+    match /bookings/{bookingId} {
+      allow create: if isValidId(bookingId) &&
+        request.resource.data.customerName is string &&
+        request.resource.data.customerName.size() > 0 &&
+        request.resource.data.customerName.size() <= 100 &&
+        request.resource.data.customerPhone is string &&
+        request.resource.data.customerPhone.size() > 0 &&
+        request.resource.data.customerPhone.size() <= 30 &&
+        request.resource.data.serviceId is string &&
+        request.resource.data.appointmentDate is string &&
+        request.resource.data.appointmentSlot is string &&
+        request.resource.data.status is string;
+      allow read, update, delete: if isValidId(bookingId) && isAdmin();
+    }
+
+    // Conversations: Managed by session / backend or Admin
+    match /conversations/{conversationId} {
+      allow create: if isValidId(conversationId) &&
+        request.resource.data.channel is string &&
+        request.resource.data.status is string;
+      allow get: if isValidId(conversationId);
+      allow update: if isValidId(conversationId) && (isAdmin() || request.resource.data.status is string);
+      allow list, delete: if isAdmin();
+    }
+
+    // Messages: Appendable for customer chat sessions; list & admin review
+    match /messages/{messageId} {
+      allow create: if isValidId(messageId) &&
+        request.resource.data.conversationId is string &&
+        request.resource.data.sender is string &&
+        request.resource.data.text is string &&
+        request.resource.data.text.size() <= 2000;
+      allow get: if isValidId(messageId);
+      allow list: if isAdmin();
+      allow update, delete: if isValidId(messageId) && isAdmin();
+    }
+
+    // Staff: Admin-only access
+    match /staff/{staffId} {
+      allow read, write: if isValidId(staffId) && isAdmin();
+    }
+
+    // Admins: Access control list
+    match /admins/{uid} {
+      allow read: if isValidId(uid) && isAdmin();
+      allow write: if isValidId(uid) && isAdmin();
+    }
+  }
+}
